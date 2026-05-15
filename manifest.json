@@ -1,0 +1,25 @@
+{
+  "name": "Painel Equipe D",
+  "short_name": "Equipe D",
+  "description": "Painel operacional da Equipe D - Portocel T32",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#F1F3F5",
+  "theme_color": "#0B2545",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "Mascote turma D.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Mascote.png",
+      "sizes": "832x624",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
