@@ -183,6 +183,20 @@ window.PAINEL_DATA = {
     last_updated: "2026-05-14T21:03:00-03:00"
   },
 
+  // ---------- QUADRO DE AVISOS ----------
+  avisos: {
+    titulo: "Adequação dos Kits Ambientais – Meio Ambiente",
+    resumo: "Durante a auditoria de Meio Ambiente referente às normas ISO, foi identificado que o uso de pó de serra para contenção de vazamentos de óleo não é recomendado, pois o material é combustível e, em contato com óleo, pode gerar risco de princípio de incêndio.",
+    orientacao: "A orientação é substituir o pó de serra por materiais mais seguros.",
+    materiais: ["Areia", "Turfa"],
+    adequacao: "Os kits ambientais serão adequados com a reposição de areia pela SP de Lima. Também haverá disponibilidade de turfa no almoxarifado para uso em situações em que não houver areia disponível.",
+    reposicao: "Os materiais do kit de atendimento a vazamento de óleo foram repostos. Na ausência de pó de serra, foram adquiridos 6 pacotes de turfa, que poderão ser utilizados nos atendimentos ambientais.",
+    atencao: "Não utilizar o kit ambiental verde da Suzano, conforme já informado nos treinamentos. Em caso de dúvidas ou necessidade de reposição, acionar os responsáveis pela área.",
+    fonte: "Meio Ambiente",
+    cadencia_dias: 30,
+    last_updated: "2026-05-15T08:00:00-03:00"
+  },
+
   // ---------- COMUNICADOS PORTOCEL (cadência: esporádica — sem alerta de atraso) ----------
   comunicados: {
     items: [],

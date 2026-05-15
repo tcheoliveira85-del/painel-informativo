@@ -215,10 +215,21 @@ body {
   font-style: italic;
 }
 @media (max-width: 700px) {
-  .dds-hero { grid-template-columns: 1fr; padding: 22px 20px; border-radius: var(--radius-md); }
-  .dds-hero-icon { display: none; }
+  .dds-hero {
+    grid-template-columns: 1fr auto;
+    padding: 22px 18px;
+    border-radius: var(--radius-md);
+    gap: 12px;
+  }
+  .dds-hero-icon { display: flex; align-self: start; }
+  .dds-mascote { width: 72px; max-height: 96px; }
   .dds-titulo { font-size: 21px; }
   .dds-corpo { font-size: 14px; }
+}
+@media (max-width: 460px) {
+  .dds-hero { grid-template-columns: 1fr; }
+  .dds-hero-icon { justify-content: flex-start; }
+  .dds-mascote { width: 84px; }
 }
 
 /* ============ GRID DE BLOCOS ============ */
@@ -276,6 +287,24 @@ body {
   width: 20px;
   height: 20px;
   object-fit: contain;
+}
+.icon-maquinas-head {
+  background: var(--bg-soft);
+  color: var(--navy);
+  border-radius: 50%;
+}
+.icon-maquinas-head img {
+  width: 25px;
+  height: 25px;
+}
+.icon-navios-head {
+  background: #EAF2F8;
+  color: var(--navy);
+  border: 1px solid #D6E3ED;
+}
+.icon-navios-head img {
+  width: 23px;
+  height: 23px;
 }
 .icon-bg-navy  { background: var(--navy); color: white; }
 .icon-bg-teal  { background: var(--teal); color: white; }
@@ -894,19 +923,33 @@ body {
   overflow: hidden;
   height: 100%;
 }
+#block-campanha {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
 .callout-campanha {
   background: white;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 2px solid rgba(244, 194, 0, 0.78);
-  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.18);
+  box-shadow: var(--shadow-sm);
   aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 100%;
+  text-decoration: none;
 }
 .callout-campanha-img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
+  background: white;
+}
+@media (min-width: 901px) {
+  .callout-campanha { aspect-ratio: auto; height: 100%; }
 }
 .callout-citacao {
   background: var(--navy);
@@ -966,6 +1009,85 @@ body {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--teal);
+}
+
+/* ============ QUADRO DE AVISOS ============ */
+.aviso-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F3F8F7 100%);
+  border: 1px solid rgba(27, 153, 139, 0.22);
+  border-left: 5px solid var(--teal);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+.aviso-eyebrow {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal-dark);
+  margin-bottom: 8px;
+}
+.aviso-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.aviso-text {
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.aviso-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.45fr) 1fr;
+  gap: 14px;
+  margin: 14px 0;
+}
+.aviso-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+.aviso-box h4 {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.aviso-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.aviso-list li {
+  background: var(--teal-glow);
+  color: var(--teal-dark);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-weight: 700;
+  font-size: 12px;
+}
+.aviso-alerta {
+  background: rgba(199, 62, 58, 0.08);
+  border: 1px solid rgba(199, 62, 58, 0.2);
+  color: #8E2825;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+@media (max-width: 700px) {
+  .aviso-grid { grid-template-columns: 1fr; }
 }
 
 /* ============ ANEXOS LOCAIS ============ */
@@ -1167,7 +1289,7 @@ body {
     <section class="block block-w-6" id="block-maquinas">
       <div class="block-head">
         <div class="block-head-left">
-          <div class="block-head-icon icon-bg-navy">
+          <div class="block-head-icon icon-maquinas-head">
             <img src="Forklift icon.png" alt="">
           </div>
           <div>
@@ -1184,16 +1306,16 @@ body {
 
     <!-- Campanha do Mês (6 cols) -->
     <section class="block block-w-6" id="block-campanha" style="padding: 0; border: none; background: transparent; box-shadow: none;">
-      <div class="callout callout-campanha">
+      <a class="callout callout-campanha" id="campanha-link" href="#" target="_blank" rel="noopener" aria-label="Abrir comunicado da campanha do mês">
         <img class="callout-campanha-img" id="campanha-img" src="" alt="Comunicado Portocel em destaque">
-      </div>
+      </a>
     </section>
 
     <!-- Navios -->
     <section class="block" style="grid-column: span 12;" id="block-navios">
       <div class="block-head">
         <div class="block-head-left">
-          <div class="block-head-icon icon-bg-navy">
+          <div class="block-head-icon icon-navios-head">
             <img src="vessel icon.png" alt="">
           </div>
           <div>
@@ -1212,6 +1334,27 @@ body {
         </table>
       </div>
       <div class="block-fonte" id="navios-fonte"></div>
+    </section>
+
+    <!-- Quadro de Avisos -->
+    <section class="block" style="grid-column: span 12;" id="block-avisos">
+      <div class="block-head">
+        <div class="block-head-left">
+          <div class="block-head-icon icon-bg-warn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16v14H7l-3 3V4z"/>
+              <path d="M8 9h8M8 13h6"/>
+            </svg>
+          </div>
+          <div>
+            <div class="block-title">Quadro de Avisos</div>
+            <div class="block-subtitle">Comunicados operacionais e orientações de segurança</div>
+          </div>
+        </div>
+        <div class="freshness" id="avisos-fresh"></div>
+      </div>
+      <div id="avisos-body"></div>
+      <div class="block-fonte" id="avisos-fonte"></div>
     </section>
 
     <!-- Composições (6 cols) -->
@@ -1550,7 +1693,7 @@ document.getElementById("header-date").textContent =
 const todosUpdates = [
   D.dds, D.maquinas, D.navios, D.composicoes, D.dna,
   D.estoque, D.treinamentos, D.simulados, D.ferias, D.aniversariantes,
-  D.campanha_mes, D.comunicados
+  D.campanha_mes, D.avisos, D.comunicados
 ].map(b => b && b.last_updated).filter(Boolean).map(d => new Date(d).getTime());
 if (todosUpdates.length) {
   const maxUpdate = new Date(Math.max(...todosUpdates));
@@ -1617,10 +1760,12 @@ renderFresh("maquinas-fresh", D.maquinas.last_updated, D.maquinas.cadencia_dias)
 
 // ---------- Campanha do mês ----------
 const imgEl = document.getElementById("campanha-img");
+const campanhaLink = document.getElementById("campanha-link");
 if (D.campanha_mes.imagem) {
   imgEl.src = D.campanha_mes.imagem;
+  campanhaLink.href = D.campanha_mes.imagem;
 } else {
-  imgEl.style.display = "none";
+  campanhaLink.style.display = "none";
 }
 
 // ---------- Navios ----------
@@ -1641,6 +1786,33 @@ D.navios.items.forEach(n => {
 });
 document.getElementById("navios-fonte").textContent = "Fonte: " + (D.navios.fonte || "—");
 renderFresh("navios-fresh", D.navios.last_updated, D.navios.cadencia_dias);
+
+// ---------- Quadro de Avisos ----------
+const avisosBody = document.getElementById("avisos-body");
+if (D.avisos) {
+  const materiais = (D.avisos.materiais || []).map(m => `<li>${escapeHtml(m)}</li>`).join("");
+  avisosBody.innerHTML = `
+    <article class="aviso-card">
+      <div class="aviso-eyebrow">Meio Ambiente</div>
+      <h3 class="aviso-title">${escapeHtml(D.avisos.titulo)}</h3>
+      <p class="aviso-text">${escapeHtml(D.avisos.resumo)}</p>
+      <p class="aviso-text">${escapeHtml(D.avisos.orientacao)}</p>
+      <div class="aviso-grid">
+        <div class="aviso-box">
+          <h4>Materiais seguros</h4>
+          <ul class="aviso-list">${materiais}</ul>
+        </div>
+        <div class="aviso-box">
+          <h4>Adequação dos kits</h4>
+          <p class="aviso-text">${escapeHtml(D.avisos.adequacao)}</p>
+          <p class="aviso-text"><strong>Reposição dos materiais:</strong> ${escapeHtml(D.avisos.reposicao)}</p>
+        </div>
+      </div>
+      <div class="aviso-alerta"><strong>Atenção:</strong> ${escapeHtml(D.avisos.atencao)}</div>
+    </article>`;
+  document.getElementById("avisos-fonte").textContent = "Fonte: " + (D.avisos.fonte || "—");
+  renderFresh("avisos-fresh", D.avisos.last_updated, D.avisos.cadencia_dias);
+}
 
 // ---------- Composições ----------
 const cTbody = document.querySelector("#composicoes-tbl tbody");
