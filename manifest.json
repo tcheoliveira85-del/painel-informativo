@@ -16,8 +16,8 @@
       "purpose": "any"
     },
     {
-      "src": "Mascote.png",
-      "sizes": "832x624",
+      "src": "Mascote painel.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     }

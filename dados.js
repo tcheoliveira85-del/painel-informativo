@@ -22,9 +22,9 @@ window.PAINEL_DATA = {
     versao: "1.4",
     logo: "logoPort.png",
     mascote: {
-      principal: "Mascote equipe D.png",
+      principal: "Mascote painel.png",
       recorte: "Mascote painel.png",
-      fundo: "Mascote.png"
+      fundo: "Mascote painel.png"
     }
   },
 
