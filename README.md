@@ -1,179 +1,228 @@
-# Painel Equipe D — Portocel T32
+# Painel Equipe D - Portocel T32
 
-Painel vivo de comunicação operacional da Equipe D. Conteúdo é atualizado por bloco, com a frequência natural de cada informação. Sem cadência forçada, sem edições "perdidas".
+Painel operacional estático da Equipe D Portocel T32, feito em HTML, CSS e JavaScript puro para consulta rápida no turno.
+
+O painel reúne em uma única tela informações de DDS, máquinas disponíveis, campanha do mês, navios programados, composições ferroviárias, estoque do armazém, treinamentos e simulados, DNA - De Olho na Área, férias, aniversariantes, comunicados internos e frase de fechamento.
+
+A proposta é manter os principais dados operacionais sempre visíveis, com atualização simples por arquivo, sem backend, sem banco de dados e com suporte a instalação como PWA.
 
 ---
 
-## Arquitetura
+## Estrutura do projeto
 
-```
+```text
 painel/
-├── index.html      ← Estrutura visual e renderização (NÃO EDITAR)
-├── dados.js        ← TODO o conteúdo do painel (este é o único arquivo que você edita)
-├── manifest.json   ← Configuração de instalação do PWA
-├── service-worker.js ← Cache offline dos arquivos locais
-├── *.pdf / *.jpg / *.png ← Arquivos de apoio usados para alimentar os dados
-└── README.md       ← Este arquivo
+├── index.html              # Estrutura visual e renderização do painel
+├── dados.js                # Conteúdo e dados operacionais do painel
+├── manifest.json           # Configuração PWA
+├── service-worker.js       # Cache local/offline dos arquivos
+├── logoPort.png            # Símbolo da Portocel usado no cabeçalho
+├── Forklift icon.png       # Ícone de máquinas/empilhadeiras
+├── vessel icon.png         # Ícone de navios
+├── train icon.png          # Ícone de composições ferroviárias
+├── DNA icon.png            # Ícone do bloco DNA
+├── Comunicados Portocel*.jpg
+├── Mascote*.png
+├── *.pdf / *.png / *.jpeg  # Arquivos de apoio usados como fonte de dados
+└── README.md
 ```
 
-**Regra de ouro:** para atualizar conteúdo, mexer apenas em `dados.js`. O `index.html` lê tudo de lá automaticamente. PDFs e prints da pasta servem como fonte de conferência; eles não precisam aparecer como anexos no painel.
+Regra principal: para atualizar o conteúdo do painel, edite preferencialmente apenas o arquivo `dados.js`.
+
+Os PDFs, imagens e prints da pasta servem como fonte de informação. Eles não precisam aparecer como anexos no painel, exceto quando forem imagens usadas diretamente, como mascote, logo, ícones ou Comunicados Portocel.
 
 ---
 
-## Como atualizar o conteúdo
+## Blocos do painel
 
-1. Abra `dados.js` em qualquer editor (Bloco de Notas, VS Code, Notepad++).
-2. Localize o bloco que mudou (cada bloco está comentado e tem cabeçalho claro).
-3. Altere os valores entre aspas.
-4. **Atualize o campo `last_updated`** do bloco que você mexeu.
+| Bloco | Finalidade |
+|---|---|
+| DDS | Mensagem diária de segurança do turno |
+| Máquinas Disponíveis | Status da frota, equipamentos em uso, stand-by e manutenção |
+| Campanha do Mês | Destaque visual de campanha/comunicado Portocel |
+| Navios Programados | Line-up atual, terminal, tipo, agência, ETA e volume |
+| Composições Ferroviárias | Prefixo, origem, chegada, vagões e produto programado |
+| Estoque do Armazém | Estoque atual, saldo, entrada programada e projeção |
+| Treinamentos e Simulados | Convocações e exercícios do período no mesmo card |
+| DNA - De Olho na Área | Indicadores previstos, realizados e performance |
+| Pessoas | Férias e aniversariantes, com função quando disponível |
+| Comunicados | Materiais internos Portocel usados como apoio |
+| Citação | Frase de fechamento do painel |
+
+---
+
+## Como atualizar os dados
+
+1. Abra o arquivo `dados.js`.
+2. Encontre o bloco correspondente à informação que mudou.
+3. Altere os valores entre aspas ou números.
+4. Atualize o campo `last_updated` do bloco alterado.
+5. Salve o arquivo.
+6. Publique a alteração no GitHub.
 
 Formato do `last_updated`:
 
-```
-"AAAA-MM-DDTHH:MM:SS-03:00"
+```javascript
+last_updated: "2026-05-15T07:30:00-03:00"
 ```
 
-Exemplo prático para `14/05/2026 às 07:30 da manhã`:
+Use sempre o horário de Brasília (`-03:00`).
+
+---
+
+## Estoque do armazém
+
+O bloco `estoque` fica em `dados.js`.
+
+Capacidade padrão considerada para o armazém:
 
 ```javascript
-last_updated: "2026-05-14T07:30:00-03:00"
+capacidade: 70000
 ```
 
-5. Salve o arquivo.
-6. Suba para o GitHub (ou copie para o servidor onde está hospedado).
+O painel calcula automaticamente:
 
-### Como usar PDFs e imagens de apoio
+- estoque atual;
+- saldo atual;
+- entrada programada com base nas composições ferroviárias;
+- estoque projetado;
+- saldo projetado;
+- percentual de ocupação.
 
-1. Abra o PDF, print ou imagem recebido.
-2. Copie as informações relevantes para o bloco correto em `dados.js`.
-3. Atualize o `last_updated` do bloco alterado.
-4. Só referencie imagem no `dados.js` quando ela realmente deve aparecer no painel, como o mascote ou os Comunicados Portocel.
+A entrada programada é lida a partir do campo `produto` das composições. Exemplo:
 
----
+```javascript
+{ id: "L50", produto: "RSP-EP · 6.144" }
+```
 
-## Indicador "Última Atualização" — como funciona
-
-Cada bloco tem:
-
-- `cadencia_dias`: com que frequência **deveria** ser atualizado
-- `last_updated`: quando foi atualizado pela última vez
-
-O painel calcula sozinho a cor do indicador:
-
-| Bolinha | Significado |
-|---|---|
-| 🟢 verde  | Dentro do prazo |
-| 🟡 amarelo | Atraso leve (1× a 2× a cadência) |
-| 🔴 vermelho | Crítico — passou de 2× a cadência (pulsa pra chamar atenção) |
-
-Para blocos esporádicos (comunicados, citação), use `cadencia_dias: null` — não há alerta de atraso.
-
-### Cadências configuradas
-
-| Bloco | Cadência | Como atualizar |
-|---|---|---|
-| DDS | Diária | Logo no início do turno |
-| Máquinas | Diária | Print do grupo WhatsApp |
-| Navios | Sob demanda (alerta após 7 dias) | Quando o line-up mudar |
-| Composições | Sob demanda (alerta após 7 dias) | Quando houver previsão FIPS |
-| DNA | Quinzenal | Fechamento da quinzena |
-| Treinamentos | Sob demanda (alerta após 30 dias) | Convocação do RH |
-| Simulados | Mensal | Calendário SESMT |
-| Férias | Mensal | Início do mês |
-| Aniversariantes | Mensal | Início do mês |
-| Campanha do mês | Mensal | Virada do mês |
-| Comunicados | Esporádico | Quando chegam |
+Nesse caso, o painel considera `6.144 tons` como entrada programada.
 
 ---
 
-## Como hospedar no GitHub Pages (gratuito)
+## Funções da equipe
 
-### Passo 1 — Criar a conta GitHub (se ainda não tem)
+As funções da Equipe D ficam no bloco `equipe_funcoes` em `dados.js`.
 
-Acesse https://github.com/signup e crie sua conta.
+Quando uma pessoa aparece em férias ou aniversariante, o painel procura o nome nessa base e mostra a função automaticamente.
 
-### Passo 2 — Criar o repositório
+Exemplo:
 
-1. Clique em "+" no topo direito → "New repository".
-2. Nome sugerido: `painel-equipe-d`
-3. Marque **Public**.
-4. Marque "Add a README file".
-5. Clique em "Create repository".
+```javascript
+{ funcao: "Operador de Empilhadeira", nome: "Adilson Gomes de Lima" }
+```
 
-### Passo 3 — Subir os arquivos
-
-1. No repositório, clique em "Add file" → "Upload files".
-2. Arraste os arquivos usados pelo site: `index.html`, `dados.js`, `manifest.json`, `service-worker.js`, mascote e imagens dos Comunicados Portocel.
-3. Embaixo, mensagem: `Versão inicial do painel`.
-4. Clique em "Commit changes".
-
-### Passo 4 — Ativar o GitHub Pages
-
-1. No repositório, vá em **Settings** (engrenagem no topo).
-2. Menu lateral: **Pages**.
-3. Em "Source", selecione **Deploy from a branch**.
-4. Branch: **main** / pasta: **/ (root)**.
-5. Clique em "Save".
-6. Aguarde 1–2 minutos. O endereço aparece no topo: `https://SEUUSUARIO.github.io/painel-equipe-d/`.
-
-### Passo 5 — Distribuir para a equipe
-
-- Copie o link e gere um QR Code (https://www.qr-code-generator.com/ — gratuito).
-- Imprima o QR e cole no posto de operação / mural da equipe.
-- Compartilhe o link no grupo de WhatsApp da equipe.
+Se o nome estiver escrito de forma diferente entre os blocos, a função pode não aparecer. Para evitar isso, mantenha o mesmo nome usado em `equipe_funcoes`.
 
 ---
 
-## Atualizando após hospedado
+## Navios e composições
 
-Sempre que mudar `dados.js`:
+No bloco de navios:
 
-1. Vá ao repositório no GitHub.
-2. Clique no arquivo `dados.js`.
-3. Clique no ícone de lápis ✏️ (canto superior direito).
-4. Edite direto no navegador.
-5. Embaixo, mensagem: `Atualização do DDS de 14/05` (ou o que for).
-6. Clique em "Commit changes".
-7. Em até 1 minuto o painel está atualizado para todos.
+- `tipo` representa o tipo de guindaste/equipamento, como `JIB`;
+- `agencia` representa a agência, como `WPS`;
+- `berco` representa o terminal/berço, como `T32`.
 
-**Dica:** dá pra fazer isso pelo celular, em qualquer lugar.
+No bloco de composições, use apenas o prefixo após a barra quando o documento vier com dois prefixos.
 
----
+Exemplo:
 
-## Privacidade — atenção
-
-GitHub Pages é **público**. Antes de subir:
-
-- ✅ **Não** coloque nomes completos sem autorização.
-- ✅ **Não** coloque telefones, e-mails pessoais, fotos identificáveis sem consentimento.
-- ✅ **Não** coloque dados sensíveis de operação (volumes confidenciais, contratos, contatos de cliente).
-- ✅ DDS, indicadores genéricos, programações, campanhas: tudo OK.
-
-**Alternativa privada:** GitHub Pages tem opção **Private** em planos pagos. Ou use a intranet da Portocel (peça apoio à TI).
+```text
+L49/L50 -> usar L50
+```
 
 ---
 
-## Manutenção
+## Ícones e imagens
 
-- O painel funciona offline depois de carregado uma vez em HTTPS ou `localhost`.
-- Não usa banco de dados, não tem servidor.
-- Funciona em qualquer celular, tablet, ou computador com navegador moderno.
-- Fontes carregam do Google Fonts; se estiver offline, o navegador usa fontes do próprio sistema.
-- Se trocar conteúdo e alguém continuar vendo versão antiga, recarregue a página. O `service-worker.js` também deve ter o nome do cache atualizado quando houver mudança grande.
+Os ícones principais são arquivos locais:
 
----
+- `Forklift icon.png`
+- `vessel icon.png`
+- `train icon.png`
+- `DNA icon.png`
 
-## Roadmap sugerido (versões futuras)
+Ao trocar qualquer ícone ou imagem usada pelo painel:
 
-Coisas que podem entrar quando o piloto provar valor:
-
-- **v1.1** — Indicador de PTB médio diário (gráfico mini-sparkline)
-- **v1.2** — Página específica de colaboração com Suzano (cliente)
-- **v1.3** — Galeria de fotos da operação (rotativa)
-- **v1.4** — Histórico de DDS (últimos 30)
-- **v2.0** — Integração com Microsoft Graph (Outlook) para puxar line-up automaticamente
+1. mantenha o arquivo dentro da pasta `painel`;
+2. confira se o nome no `index.html` ou `dados.js` está igual ao nome do arquivo;
+3. se necessário, atualize o cache no `service-worker.js`.
 
 ---
 
-**Organizado por:** Thiago Nascimento de Oliveira · Equipe D · Operações
-**Stack:** HTML + CSS + JavaScript puro · Sem dependências · Sem build
+## Publicação no GitHub Pages
+
+1. Crie um repositório no GitHub.
+2. Envie todos os arquivos da pasta `painel`.
+3. Vá em **Settings > Pages**.
+4. Em **Source**, selecione **Deploy from a branch**.
+5. Escolha a branch `main` e a pasta `/ (root)`.
+6. Salve e aguarde o GitHub gerar o link.
+
+O endereço ficará parecido com:
+
+```text
+https://seuusuario.github.io/painel-equipe-d/
+```
+
+---
+
+## Atualização depois de publicado
+
+Para atualizar o painel no GitHub:
+
+1. Abra o repositório.
+2. Clique em `dados.js`.
+3. Clique no ícone de edição.
+4. Altere os dados necessários.
+5. Faça o commit.
+6. Aguarde o GitHub Pages republicar.
+
+Se alguém continuar vendo uma versão antiga, recarregue a página. Em mudanças maiores de HTML, CSS, imagens ou cache, atualize também o nome do cache em `service-worker.js`.
+
+Exemplo:
+
+```javascript
+const CACHE_NAME = "painel-equipe-d-v1.10";
+```
+
+---
+
+## Rodar localmente
+
+Dentro da pasta do projeto:
+
+```powershell
+cd "C:\Users\Windows 11\Downloads\painel-equipe-d\painel"
+python -m http.server 8787
+```
+
+Depois acesse:
+
+```text
+http://127.0.0.1:8787/index.html
+```
+
+---
+
+## Privacidade
+
+GitHub Pages público deixa o conteúdo visível para qualquer pessoa com o link.
+
+Antes de publicar, confirme se os nomes, funções, dados operacionais, volumes e documentos podem ser exibidos publicamente. Caso exista restrição interna, use um repositório privado com solução de hospedagem apropriada ou publique o painel em ambiente interno.
+
+---
+
+## Stack
+
+- HTML
+- CSS
+- JavaScript puro
+- PWA com `manifest.json` e `service-worker.js`
+- Sem backend
+- Sem banco de dados
+- Sem etapa de build
+
+---
+
+**Organização:** Thiago Nascimento de Oliveira - Equipe D - Operações Portocel T32
