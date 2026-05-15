@@ -1,4 +1,4 @@
-const CACHE_NAME = "painel-equipe-d-v1.11";
+const CACHE_NAME = "painel-equipe-d-v1.12";
 
 const LOCAL_ASSETS = [
   "./",
@@ -10,6 +10,7 @@ const LOCAL_ASSETS = [
   "vessel icon.png",
   "train icon.png",
   "DNA icon.png",
+  "Mascote painel.png",
   "Mascote turma D.png",
   "Mascote.png",
   "Comunicados Portocel.jpg",

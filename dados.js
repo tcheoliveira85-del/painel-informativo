@@ -23,7 +23,7 @@ window.PAINEL_DATA = {
     logo: "logoPort.png",
     mascote: {
       principal: "Mascote equipe D.png",
-      recorte: "Mascote turma D.png",
+      recorte: "Mascote painel.png",
       fundo: "Mascote.png"
     }
   },
